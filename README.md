@@ -1,14 +1,49 @@
 Travel Management System
 
-A Java-based Travel Management System designed to simplify the process of managing travel plans, destinations, customers, bookings, and related travel services.
-This project can be used as a learning project or as a base for building full-scale travel applications.
+A complete Java-based Travel Management System designed to manage trips, customers, bookings, and provide a GUI interface for user interaction.
+This project demonstrates object-oriented programming, Java Swing GUI, and modular system design.
 
-📌 Features
+🧭 Overview
 
-Manage travel packages / destinations
+The Travel Management System allows users to:
 
-Add, update, delete travel bookings
+Create and view travel trips
 
-Fully built using Java (Core / OOP)
+Add and manage customers
 
-File-based or in-memory storage (depending on your implementation)
+Create bookings linking customers with trips
+
+View all bookings
+
+Use a clean GUI (Java Swing) for interaction
+
+Use console-based system (if needed)
+
+It is suitable for students, learning projects, Java beginners, and portfolio demonstrations.
+
+🚀 Features
+✅ Core Features
+
+Add new customers
+
+Add new trips (destination, cost, date, details)
+
+Make bookings
+
+Display all customers
+
+Display all trips
+
+Display all bookings
+
+🎨 GUI Features (Swing-based)
+
+User-friendly interface
+
+Buttons for each travel operation
+
+Form-based input dialogs
+
+Output displayed in message boxes
+
+Fully event-driven architecture
