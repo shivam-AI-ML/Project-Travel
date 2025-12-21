@@ -1,107 +1,87 @@
-Travel Management System
+Travel Management System (Java Swing)
+📌 Project Description
 
-A complete Java-based Travel Management System designed to manage trips, customers, bookings, and provide a GUI interface for user interaction.
-This project demonstrates object-oriented programming, Java Swing GUI, and modular system design.
+The Travel Management System is a Java Swing–based desktop application that helps manage trips, customers, and bookings.
+It provides a simple graphical user interface (GUI) for adding trips, registering customers, creating bookings, and viewing stored data.
 
-🧭 Overview
+This project is suitable for core Java, OOP concepts, and Swing GUI practice.
 
-The Travel Management System allows users to:
+🚀 Features
 
-Create and view travel trips
+Add new trips with destination, date, price, and available seats
 
-Add and manage customers
+View all available trips
 
-Create bookings linking customers with trips
+Add customer details
+
+View all customers
+
+Create bookings by selecting customer and trip
+
+Automatically reduce seat count after booking
 
 View all bookings
 
-Use a clean GUI (Java Swing) for interaction
+User-friendly Swing GUI
 
-Use console-based system (if needed)
+🛠 Technologies Used
 
-It is suitable for students, learning projects, Java beginners, and portfolio demonstrations.
+Java (JDK 8 or above)
 
-🚀 Features
-✅ Core Features
+Java Swing (GUI)
 
-Add new customers
+AWT
 
-Add new trips (destination, cost, date, details)
+Collections Framework (ArrayList, List)
 
-Make bookings
+📂 Project Structure
+TravelManagementGUI.java
+│
+├── Trip class        (Trip details)
+├── Customer class    (Customer information)
+├── Booking class     (Booking details)
+└── TravelManagementGUI class (Main GUI & logic)
 
+▶️ How to Run the Project
 
-🚀 How to Run This Project
+Install Java JDK (8 or later)
 
-This project can be run in two different ways:
+Open the project in VS Code / IntelliJ / Eclipse
 
-▶️ Method 1 — Run the GUI Version (Java Swing)
-
-This is the recommended way to use the Travel Management System.
-
-1. Open the project in an IDE
-
-Works on:
-
-IntelliJ IDEA
-
-Eclipse
-
-NetBeans
-
-VS Code (with Java extension)
-
-2. Make sure JDK 8+ is installed
-java -version
-
-3. Run the GUI
-
-Open the file:
+Save the file as:
 
 TravelManagementGUI.java
 
 
-Click Run.
+Compile the program:
 
-✔️ The GUI window will open
+javac TravelManagementGUI.java
 
-You can now:
 
-Add Customer
+Run the program:
 
-Add Trip
-
-Create Booking
-
-View All Data
-
-▶️ Method 2 — Run Using Terminal (No IDE Required)
-1. Go to the project folder
-cd Project-Travel
-
-2. Compile all Java files
-javac *.java
-
-3. Run the GUI version
 java TravelManagementGUI
 
-Or run the console version
-java TravelManagementSystem
+🖥 Application Buttons
 
-Display all customers
+Add Trip – Add new travel trips
 
-Display all trips
+View Trips – Display all trips
 
-Display all bookings
+Add Customer – Register new customers
 
-🎨 GUI Features (Swing-based)
+View Customers – Show all customers
 
-User-friendly interface
+Create Booking – Book a trip for a customer
 
-Buttons for each travel operation
+View Bookings – Display all bookings
 
-Form-based input dialogs
+Exit – Close the application
 
-Output displayed in message boxes
+📸 GUI Overview
 
-Fully event-driven architecture
+Text area displays all output
+
+Dialog boxes are used for data input
+
+Grid layout used for buttons
