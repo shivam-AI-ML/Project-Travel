@@ -3,81 +3,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
 
-// Trip class
-class Trip {
-    private int id;
-    private String destination;
-    private String date;
-    private double price;
-    private int seatsAvailable;
-
-    public Trip(int id, String destination, String date, double price, int seatsAvailable) {
-        this.id = id;
-        this.destination = destination;
-        this.date = date;
-        this.price = price;
-        this.seatsAvailable = seatsAvailable;
-    }
-
-    public int getId() { return id; }
-    public String getDestination() { return destination; }
-    public String getDate() { return date; }
-    public double getPrice() { return price; }
-    public int getSeatsAvailable() { return seatsAvailable; }
-
-    public void reduceSeat() { if (seatsAvailable > 0) seatsAvailable--; }
-
-    @Override
-    public String toString() {
-        return "ID: " + id + ", " + destination + " on " + date + ", $" + price + ", Seats: " + seatsAvailable;
-    }
-}
-
-// Customer class
-class Customer {
-    private int id;
-    private String name;
-    private String phone;
-
-    public Customer(int id, String name, String phone) {
-        this.id = id;
-        this.name = name;
-        this.phone = phone;
-    }
-
-    public int getId() { return id; }
-
-    @Override
-    public String toString() {
-        return "ID: " + id + ", " + name + ", " + phone;
-    }
-}
-
-// Booking class
-class Booking {
-    private int bookingId;
-    private Customer customer;
-    private Trip trip;
-
-    public Booking(int bookingId, Customer customer, Trip trip) {
-        this.bookingId = bookingId;
-        this.customer = customer;
-        this.trip = trip;
-    }
-
-    @Override
-    public String toString() {
-        return "Booking ID: " + bookingId + ", Customer: " + customer.getId() +
-                ", Trip: " + trip.getId() + " (" + trip.getDestination() + ")";
-    }
-}
-
-// Main GUI class
 public class TravelManagementGUI extends JFrame {
-    private List<Trip> trips = new ArrayList<>();
-    private List<Customer> customers = new ArrayList<>();
-    private List<Booking> bookings = new ArrayList<>();
-    private int nextTripId = 1, nextCustomerId = 1, nextBookingId = 1;
 
     private JTextArea displayArea;
 
@@ -91,8 +17,7 @@ public class TravelManagementGUI extends JFrame {
         displayArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(displayArea);
 
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(3, 3, 10, 10));
+        JPanel buttonPanel = new JPanel(new GridLayout(3, 3, 10, 10));
 
         JButton addTripBtn = new JButton("Add Trip");
         JButton viewTripsBtn = new JButton("View Trips");
@@ -113,7 +38,6 @@ public class TravelManagementGUI extends JFrame {
         add(scrollPane, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
 
-        // Button Actions
         addTripBtn.addActionListener(e -> addTrip());
         viewTripsBtn.addActionListener(e -> viewTrips());
         addCustomerBtn.addActionListener(e -> addCustomer());
@@ -123,102 +47,162 @@ public class TravelManagementGUI extends JFrame {
         exitBtn.addActionListener(e -> System.exit(0));
     }
 
+    // ---------------- ADD TRIP ----------------
     private void addTrip() {
-        JTextField destinationField = new JTextField();
-        JTextField dateField = new JTextField();
-        JTextField priceField = new JTextField();
-        JTextField seatsField = new JTextField();
+        JTextField destination = new JTextField();
+        JTextField date = new JTextField();
+        JTextField price = new JTextField();
+        JTextField seats = new JTextField();
 
-        Object[] message = {
-            "Destination:", destinationField,
-            "Date (yyyy-mm-dd):", dateField,
-            "Price:", priceField,
-            "Seats Available:", seatsField
+        Object[] msg = {
+                "Destination:", destination,
+                "Date (yyyy-mm-dd):", date,
+                "Price:", price,
+                "Seats:", seats
         };
 
-        int option = JOptionPane.showConfirmDialog(this, message, "Add Trip", JOptionPane.OK_CANCEL_OPTION);
-        if (option == JOptionPane.OK_OPTION) {
-            String destination = destinationField.getText();
-            String date = dateField.getText();
-            double price = Double.parseDouble(priceField.getText());
-            int seats = Integer.parseInt(seatsField.getText());
+        if (JOptionPane.showConfirmDialog(this, msg, "Add Trip",
+                JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
 
-            Trip trip = new Trip(nextTripId++, destination, date, price, seats);
-            trips.add(trip);
-            displayArea.append("Trip added: " + trip + "\n");
+            try (Connection con = DBConnection.getConnection()) {
+                String sql = "INSERT INTO trips(destination, trip_date, price, seats) VALUES (?, ?, ?, ?)";
+                PreparedStatement ps = con.prepareStatement(sql);
+
+                ps.setString(1, destination.getText());
+                ps.setDate(2, Date.valueOf(date.getText()));
+                ps.setDouble(3, Double.parseDouble(price.getText()));
+                ps.setInt(4, Integer.parseInt(seats.getText()));
+
+                ps.executeUpdate();
+                displayArea.append("Trip added successfully\n");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
+    // ---------------- VIEW TRIPS ----------------
     private void viewTrips() {
         displayArea.append("--- All Trips ---\n");
-        for (Trip t : trips) {
-            displayArea.append(t + "\n");
+        try (Connection con = DBConnection.getConnection()) {
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery("SELECT * FROM trips");
+
+            while (rs.next()) {
+                displayArea.append(
+                        "ID: " + rs.getInt("id") +
+                        ", " + rs.getString("destination") +
+                        ", " + rs.getDate("trip_date") +
+                        ", $" + rs.getDouble("price") +
+                        ", Seats: " + rs.getInt("seats") + "\n"
+                );
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
+    // ---------------- ADD CUSTOMER ----------------
     private void addCustomer() {
-        JTextField nameField = new JTextField();
-        JTextField phoneField = new JTextField();
+        JTextField name = new JTextField();
+        JTextField phone = new JTextField();
 
-        Object[] message = {
-            "Customer Name:", nameField,
-            "Phone Number:", phoneField
+        Object[] msg = {
+                "Name:", name,
+                "Phone:", phone
         };
 
-        int option = JOptionPane.showConfirmDialog(this, message, "Add Customer", JOptionPane.OK_CANCEL_OPTION);
-        if (option == JOptionPane.OK_OPTION) {
-            String name = nameField.getText();
-            String phone = phoneField.getText();
-            Customer customer = new Customer(nextCustomerId++, name, phone);
-            customers.add(customer);
-            displayArea.append("Customer added: " + customer + "\n");
+        if (JOptionPane.showConfirmDialog(this, msg, "Add Customer",
+                JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
+
+            try (Connection con = DBConnection.getConnection()) {
+                String sql = "INSERT INTO customers(name, phone) VALUES (?, ?)";
+                PreparedStatement ps = con.prepareStatement(sql);
+                ps.setString(1, name.getText());
+                ps.setString(2, phone.getText());
+                ps.executeUpdate();
+
+                displayArea.append("Customer added successfully\n");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
+    // ---------------- VIEW CUSTOMERS ----------------
     private void viewCustomers() {
         displayArea.append("--- All Customers ---\n");
-        for (Customer c : customers) {
-            displayArea.append(c + "\n");
+        try (Connection con = DBConnection.getConnection()) {
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery("SELECT * FROM customers");
+
+            while (rs.next()) {
+                displayArea.append(
+                        "ID: " + rs.getInt("id") +
+                        ", " + rs.getString("name") +
+                        ", " + rs.getString("phone") + "\n"
+                );
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
+    // ---------------- CREATE BOOKING ----------------
     private void createBooking() {
-        if (customers.isEmpty() || trips.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "No customers or trips available.");
-            return;
-        }
+        String customerId = JOptionPane.showInputDialog(this, "Enter Customer ID:");
+        String tripId = JOptionPane.showInputDialog(this, "Enter Trip ID:");
 
-        String customerIdStr = JOptionPane.showInputDialog(this, "Enter Customer ID:");
-        String tripIdStr = JOptionPane.showInputDialog(this, "Enter Trip ID:");
+        try (Connection con = DBConnection.getConnection()) {
 
-        if (customerIdStr != null && tripIdStr != null) {
-            int customerId = Integer.parseInt(customerIdStr);
-            int tripId = Integer.parseInt(tripIdStr);
+            PreparedStatement check = con.prepareStatement(
+                    "SELECT seats FROM trips WHERE id=?");
+            check.setInt(1, Integer.parseInt(tripId));
+            ResultSet rs = check.executeQuery();
 
-            Customer customer = customers.stream().filter(c -> c.getId() == customerId).findFirst().orElse(null);
-            Trip trip = trips.stream().filter(t -> t.getId() == tripId).findFirst().orElse(null);
+            if (rs.next() && rs.getInt("seats") > 0) {
 
-            if (customer == null || trip == null) {
-                JOptionPane.showMessageDialog(this, "Customer or Trip not found.");
-                return;
+                PreparedStatement book = con.prepareStatement(
+                        "INSERT INTO bookings(customer_id, trip_id) VALUES (?, ?)");
+                book.setInt(1, Integer.parseInt(customerId));
+                book.setInt(2, Integer.parseInt(tripId));
+                book.executeUpdate();
+
+                PreparedStatement update = con.prepareStatement(
+                        "UPDATE trips SET seats = seats - 1 WHERE id=?");
+                update.setInt(1, Integer.parseInt(tripId));
+                update.executeUpdate();
+
+                displayArea.append("Booking created successfully\n");
+            } else {
+                JOptionPane.showMessageDialog(this, "No seats available!");
             }
-
-            if (trip.getSeatsAvailable() <= 0) {
-                JOptionPane.showMessageDialog(this, "No seats available.");
-                return;
-            }
-
-            Booking booking = new Booking(nextBookingId++, customer, trip);
-            bookings.add(booking);
-            trip.reduceSeat();
-            displayArea.append("Booking created: " + booking + "\n");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
+    // ---------------- VIEW BOOKINGS ----------------
     private void viewBookings() {
         displayArea.append("--- All Bookings ---\n");
-        for (Booking b : bookings) {
-            displayArea.append(b + "\n");
+        try (Connection con = DBConnection.getConnection()) {
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(
+                    "SELECT b.booking_id, c.name, t.destination " +
+                    "FROM bookings b " +
+                    "JOIN customers c ON b.customer_id = c.id " +
+                    "JOIN trips t ON b.trip_id = t.id"
+            );
+
+            while (rs.next()) {
+                displayArea.append(
+                        "Booking ID: " + rs.getInt("booking_id") +
+                        ", Customer: " + rs.getString("name") +
+                        ", Trip: " + rs.getString("destination") + "\n"
+                );
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -226,3 +210,5 @@ public class TravelManagementGUI extends JFrame {
         SwingUtilities.invokeLater(() -> new TravelManagementGUI().setVisible(true));
     }
 }
+
+
