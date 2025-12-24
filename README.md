@@ -1,84 +1,133 @@
-Travel Management System (Java Swing)
-📌 Project Description
+Travel Management System (Java + JDBC)
 
-The Travel Management System is a Java Swing–based desktop application that helps manage trips, customers, and bookings.
-It provides a simple graphical user interface (GUI) for adding trips, registering customers, creating bookings, and viewing stored data.
+A Java Swing based Travel Management System that allows users to manage trips, customers, and bookings using a MySQL database.
+This project uses JDBC without Maven, making it suitable for beginners and college submissions.
 
-This project is suitable for core Java, OOP concepts, and Swing GUI practice.
+📌 Features
 
-🚀 Features
+Add new trips
 
-Add new trips with destination, date, price, and available seats
+View all trips
 
-View all available trips
+Add customers
 
-Add customer details
+View customers
 
-View all customers
+Create bookings
 
-Create bookings by selecting customer and trip
+View bookings
 
-Automatically reduce seat count after booking
+Seat availability management
 
-View all bookings
+GUI built using Java Swing
 
-User-friendly Swing GUI
+🛠️ Technologies Used
 
-🛠 Technologies Used
-
-Java (JDK 8 or above)
+Java (JDK 8+)
 
 Java Swing (GUI)
 
-AWT
+MySQL
 
-Collections Framework (ArrayList, List)
+JDBC
+
+MySQL Connector/J (JAR)
 
 📂 Project Structure
-TravelManagementGUI.java
+Project-Travel/
 │
-├── Trip class        (Trip details)
-├── Customer class    (Customer information)
-├── Booking class     (Booking details)
-└── TravelManagementGUI class (Main GUI & logic)
+├── TravelManagementGUI.java
+├── DBConnection.java
+├── lib/
+│   └── mysql-connector-j-8.4.0.jar
+└── README.md
 
-▶️ How to Run the Project
+🗄️ Database Setup (MySQL)
 
-Install Java JDK (8 or later)
+Create database and tables using the following SQL:
 
-Open the project in VS Code / IntelliJ / Eclipse
+CREATE DATABASE travel_db;
+USE travel_db;
 
-Save the file as:
+CREATE TABLE trips (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    destination VARCHAR(100),
+    trip_date DATE,
+    price DOUBLE,
+    seats INT
+);
 
-TravelManagementGUI.java
+CREATE TABLE customers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    phone VARCHAR(15)
+);
+
+CREATE TABLE bookings (
+    booking_id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_id INT,
+    trip_id INT,
+    FOREIGN KEY (customer_id) REFERENCES customers(id),
+    FOREIGN KEY (trip_id) REFERENCES trips(id)
+);
+
+🔌 Database Configuration
+
+Update credentials in DBConnection.java if required:
+
+DriverManager.getConnection(
+    "jdbc:mysql://localhost:3306/travel_db?useSSL=false&serverTimezone=UTC",
+    "root",
+    "toor"
+);
+
+▶️ How to Compile & Run (Without Maven)
+1️⃣ Compile
+javac -cp ".;lib/mysql-connector-j-8.4.0.jar" TravelManagementGUI.java
+
+2️⃣ Run
+java -cp ".;lib/mysql-connector-j-8.4.0.jar" TravelManagementGUI
 
 
-Compile the program:
+⚠️ Important (Windows users)
+Use ; in classpath
+Linux/Mac users should use : instead.
 
-javac TravelManagementGUI.java
+❌ Common Error & Fix
+Error:
+Could not find or load main class java
 
+Reason:
 
-Run the program:
+Wrong command used.
 
-java TravelManagementGUI
+✅ Correct Command:
+java -cp ".;lib/mysql-connector-j-8.4.0.jar" TravelManagementGUI
 
-🖥 Application Buttons
+🖥️ GUI Preview
 
-Add Trip – Add new travel trips
+Buttons for all operations
 
-View Trips – Display all trips
+Data displayed in text area
 
-Add Customer – Register new customers
+Popup dialogs for input
 
-View Customers – Show all customers
+📌 Future Enhancements
 
-Create Booking – Book a trip for a customer
+Login system
 
-View Bookings – Display all bookings
+Delete / update records
 
-Exit – Close the application
+Better UI design
 
-📸 GUI Overview
+Input validation
+
+Report generation
+
+👨‍💻 Author
+
+Shivam
+📌 GitHub: https://github.com/shivam-AI-ML/Project-Travel
 
 Text area displays all output
 
